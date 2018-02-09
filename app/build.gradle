@@ -28,4 +28,5 @@ dependencies {
 
     implementation 'com.android.volley:volley:1.1.0'
     implementation 'org.jsoup:jsoup:1.11.2'
+    implementation 'io.apisense:rhino-android:1.0'
 }

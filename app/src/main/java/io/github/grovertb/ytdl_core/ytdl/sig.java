@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import io.github.grovertb.ytdl_core.Constant;
 
 /**
@@ -53,16 +57,36 @@ public class sig {
     }
 
     private void extractActions(String body) {
-        String mRegex = "var ([a-zA-Z_\\$][a-zA-Z_0-9]*)=\\{((?:(?:(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a\\)\\{(?:return )?a\\.reverse\\(\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{return a\\.slice\\(b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{a\\.splice\\(0,b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{var c=a\\[0\\];a\\[0\\]=a\\[b(?:%a\\.length)?\\];a\\[b(?:%a\\.length)?\\]=c(?:;return a)?\\}),?\\r?\\n?)+)\\};";
+        String mRegev = "var ([a-zA-Z_\\$][a-zA-Z_0-9]*)=\\{((?:(?:(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a\\)\\{(?:return )?a\\.reverse\\(\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{return a\\.slice\\(b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{a\\.splice\\(0,b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{var c=a\\[0\\];a\\[0\\]=a\\[b(?:%a\\.length)?\\];a\\[b(?:%a\\.length)?\\]=c(?:;return a)?\\}),?\\r?\\n?)+)\\};";
+        String mRegex = "var ([a-zA-Z_\\$][a-zA-Z_0-9]*)=\\{((?:(?:(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a\\)\\{(?:return )?a\\.reverse\\(\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{return a\\.slice\\(b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{a\\.splice\\(0,b\\)\\}|(?:[a-zA-Z_\\$][a-zA-Z_0-9]*|(?:'[^'\\\\]*(:?\\\\[\\s\\S][^'\\\\]*)*'|\"[^\"\\\\]*(:?\\\\[\\s\\S][^\"\\\\]*)*\")):function\\(a,b\\)\\{var c=a\\[0\\];a\\[0\\]=a\\[b(?:%a\\.length)?\\];a\\[b(?:%a\\.length)?\\]=c(?:;return a)?\\}),?\\r?\\n?)+)\\};";
 
-        System.out.println("mRegex: " + mRegex);
+        try{
+            javax.script.ScriptEngineManager se = new javax.script.ScriptEngineManager();
+            javax.script.ScriptEngine engine = se.getEngineByName("js");
 
-        Matcher objResult = Pattern.compile(mRegex).matcher(body);
-
-        if (objResult.find()) {
-            System.out.println(objResult.groupCount());
-        } else {
-            System.out.println("false");
+            System.out.println(body);
+            engine.put("str", body);
+            engine.put("rgx", mRegev);
+//            engine.eval("var rgx="+mRegev);
+            Object value = engine.eval("function validate(r, s){ println(new RegExp(r)); return new RegExp(r).exec(s);};validate(rgx, str);");
+            System.out.println(value);
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+
+
+//        Matcher objResult = Pattern.compile(mRegex).matcher(body);
+//        if (objResult.find()) {
+//            System.out.println(objResult.groupCount());
+//            System.out.println("group(o): " + objResult.group(0));
+//            System.out.println("group(1): " + objResult.group(1));
+//            System.out.println("group(2): " + objResult.group(2));
+//            System.out.println("group(3): " + objResult.group(3));
+//            System.out.println("group(4): " + objResult.group(4));
+//            System.out.println("group(5): " + objResult.group(5));
+//
+//        } else {
+//            System.out.println("false");
+//        }
     }
 }
