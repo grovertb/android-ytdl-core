@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context="io.github.grovertb.ytdl_core.MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/btnGetVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
