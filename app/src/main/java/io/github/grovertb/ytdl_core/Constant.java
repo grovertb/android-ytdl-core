@@ -5,5 +5,5 @@ package io.github.grovertb.ytdl_core;
  */
 
 public class Constant {
-    public static String YOUTUBE_URL = "https://www.youtube.com/";
+    public static String YOUTUBE_URL = "https://www.youtube.com";
 }

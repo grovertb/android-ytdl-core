@@ -1,5 +1,7 @@
 package io.github.grovertb.ytdl_core;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Pair;
@@ -14,6 +16,18 @@ import org.jsoup.nodes.Element;
 
 import android.net.Uri;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -26,10 +40,14 @@ public class MainActivity extends AppCompatActivity {
     String VIDEO_URL = "https://www.youtube.com/watch?v=";
     String url = "https://www.youtube.com/watch?v=qkkG6g6vT34&hl=en";
 
+    Activity mActivity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mActivity = this;
 
         findViewById(R.id.btnGetVideo).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-//                    String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36";
                     Document doc = Jsoup.connect(url).get();
 
                     Iterator mElement = doc.select("script").iterator();
@@ -87,9 +104,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             // signature
-
-
-                            new sig().getTokens(urlJS);
+                            new sig(mActivity).getTokens(urlJS);
                         }
 
                     }
@@ -99,19 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
-//        RequestQueue queue = Volley.newRequestQueue(this);
-//        StringRequest strReq = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                System.out.println(response);
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                VolleyLog.d(TAG, "Error: " + error.getMessage());
-//            }
-//        });
-//        queue.add(strReq);
+
     }
 
     private String getAuthor(String body) {
