@@ -1,9 +1,7 @@
 package io.github.grovertb.ytdl_core.ytdl;
 
-import android.app.Activity;
 import android.content.Context;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -15,12 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-
-import io.github.grovertb.ytdl_core.Constant;
 
 /**
  * Created by grove on 8/02/2018.
@@ -71,12 +65,12 @@ public class sig {
                     swapKey = "";
 
 
-    public sig(Activity mActivity) {
-        this.context = mActivity.getApplicationContext();
-        this.queue = Volley.newRequestQueue(mActivity);
+    public sig(Context mcontext) {
+        this.context = mcontext.getApplicationContext();
+        this.queue = Volley.newRequestQueue(mcontext);
     }
 
-    public void getTokens(String html5playerfile) {
+    public void getTokens(String html5playerfile, final GetTokenCallback callback) {
         try {
             StringRequest strReq = new StringRequest(Constant.YOUTUBE_URL + html5playerfile, new Response.Listener<String>() {
                 @Override
@@ -87,7 +81,7 @@ public class sig {
                         FileOutputStream stream = new FileOutputStream(file);
                         stream.write(response.getBytes());
                         stream.close();
-                        ArrayList<String> mTokens = extractActions(response);
+                        callback.onSuccess(extractActions(response));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -181,4 +175,8 @@ public class sig {
         }
     }
 
+
+    public interface GetTokenCallback{
+        void onSuccess(ArrayList<String> mtokens);
+    }
 }

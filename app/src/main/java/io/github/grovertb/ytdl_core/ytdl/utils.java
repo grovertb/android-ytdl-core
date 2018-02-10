@@ -1,4 +1,4 @@
-package io.github.grovertb.ytdl_core;
+package io.github.grovertb.ytdl_core.ytdl;
 
 /**
  * Created by grove on 8/02/2018.
